@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!-- ********************************** -->
+<!-- * Micro Focus COBOL Project File * -->
+<!-- ********************************** -->
+
+<project name="examen_cobol" type="simple" version="1.1">
+    <settings>
+        <cobol_settings>
+            <options type="compile">
+                <option name="DIALECT" value="MF"/>
+                <option name="CHARSET" value="ASCII"/>
+                <option name="MAX-ERROR" value="100"/>
+            </options>
+        </cobol_settings>
+        <configurations default="New Configuration">
+            <configuration type="all_dll" description="New Configuration" platform="Windows">
+                <targetdir name="New Configuration.bin"/>
+                <cobol_settings>
+                    <targettype type="obj"/>
+                    <debug value="true"/>
+                    <verbose value="false"/>
+                </cobol_settings>
+                <link_settings>
+                    <targettype type="dll/cso"/>
+                    <target name="New Configuration.bin"/>
+                    <threaded_rts value="true"/>
+                    <entry_point name=""/>
+                    <debug value="true"/>
+                    <verbose value="false"/>
+                    <rts_type value="shared"/>
+                </link_settings>
+            </configuration>
+        </configurations>
+    </settings>
+    <paths>
+        <path_group description="">
+            <dependencies>
+                <dependency_group type="cobol" description="">
+                    <path type="mfpath" enabled="true" name="&lt;Project Folder&gt;"/>
+                </dependency_group>
+            </dependencies>
+            <source>
+                <source_group type="build-precedence" description="">
+                    <path type="mfpath" enabled="true" name="&lt;Project Folder&gt;"/>
+                </source_group>
+            </source>
+        </path_group>
+    </paths>
+    <files>
+        <filetype type="cobol">
+            <file name="insertar_venta.cbl" path=""/>
+            <file name="informe_venta.cbl" path=""/>
+            <file name="Principal.cbl" path=""/>
+            <file name="consulta_venta.cbl" path=""/>
+            <file name="eliminar_venta.cbl" path=""/>
+        </filetype>
+        <filetype type="bms"/>
+    </files>
+</project>

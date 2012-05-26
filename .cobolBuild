@@ -1,0 +1,160 @@
+<project name="examen_cobol" default="build" basedir=".">
+    <taskdef name="cobol" classname="com.microfocus.ant.TaskCobol"/>
+    <taskdef name="cobolclean" classname="com.microfocus.ant.TaskCobolClean"/>
+    <taskdef name="cobollink" classname="com.microfocus.ant.TaskCobolLink"/>
+    <typedef name="mffilelist" classname="com.microfocus.ant.TypeFileList"/>
+    <typedef name="mfdirlist" classname="com.microfocus.ant.TypeDirectiveList"/>
+    <typedef name="mfdestfilelist" classname="com.microfocus.ant.TypeDestinationFileList"/>
+    
+    <!-- ****************************** -->
+    <!-- * OS-specific initialisation * -->
+    <!-- ****************************** -->
+    
+    <target name="os.init">
+        <condition property="windows">
+            <os family="windows"/>
+        </condition>
+        <condition property="unix">
+            <os family="unix"/>
+        </condition>
+    </target>
+    
+    <target name="os.init.windows" if="windows">
+        <property name="dllext" value=".dll"/>
+        <property name="exeext" value=".exe"/>
+        <property name="objext" value=".obj"/>
+        <property name="equalsInDir" value="="/>
+        <property name="shell" value="cmd"/>
+        <property name="shell.ext" value=".bat"/>
+        <property name="shell.arg" value="/c"/>
+        <property name="script.header" value="@rem MS-DOS Batch File"/>
+    </target>
+    
+    <target name="os.init.unix" if="unix">
+        <property name="dllext" value=".so"/>
+        <property name="exeext" value=""/>
+        <property name="objext" value=".o"/>
+        <property name="equalsInDir" value="="/>
+        <property name="shell" value="sh"/>
+        <property name="shell.ext" value=".sh"/>
+        <property name="shell.arg" value="-c"/>
+        <property name="script.header" value="#!/bin/sh"/>
+    </target>
+    
+    <!-- ***************************** -->
+    <!-- * COBOL compiler directives * -->
+    <!-- ***************************** -->
+    
+    <!-- cobol_directive_set_1 -->
+    
+    <mfdirlist id="cobol_directive_set_1">
+        <directive name="DIALECT" value="MF"/>
+        <directive name="COPYEXT" value="cpy,cbl"/>
+        <directive name="CHARSET" value="ASCII"/>
+        <directive name="MAX-ERROR" value="100"/>
+    </mfdirlist>
+    
+    <!-- ********************** -->
+    <!-- * COBOL source files * -->
+    <!-- ********************** -->
+    
+    <!-- cobol_file_set_1 -->
+    
+    <mffilelist id="cobol_file_set_1" srcdir="${basedir}" type="srcfile">
+        <file name="insertar_venta.cbl"/>
+        <file name="informe_venta.cbl"/>
+        <file name="Principal.cbl"/>
+        <file name="consulta_venta.cbl"/>
+        <file name="eliminar_venta.cbl"/>
+    </mffilelist>
+    
+    <!-- **************************** -->
+    <!-- * COBOL copybook locations * -->
+    <!-- **************************** -->
+    
+    <mffilelist id="cobol.copybook.locations">
+        <path type="copybook" name="${cblproj_path}"/>
+    </mffilelist>
+    
+    <!-- **************** -->
+    <!-- * Object files * -->
+    <!-- **************** -->
+    
+    <!-- Default -->
+    
+    <mffilelist id="cobol.default.object.files" srcdir="${basedir}/${cfgtargetdir}" type="objfile">
+        <file name="insertar_venta${objext}"/>
+        <file name="informe_venta${objext}"/>
+        <file name="Principal${objext}"/>
+        <file name="consulta_venta${objext}"/>
+        <file name="eliminar_venta${objext}"/>
+    </mffilelist>
+    
+    <!-- ************************* -->
+    <!-- * Configuration targets * -->
+    <!-- ************************* -->
+    
+    <!-- cfg.New_Configuration -->
+    
+    <target name="cfg.New_Configuration" depends="init">
+        <cobol desttype="obj" destdir="${basedir}/New_Configuration.bin" forceCompile="${forceCompile}" is64bit="false" debug="true" threadedRts="true">
+            <mffilelist refid="cobol.copybook.locations"/>
+            <mfdirlist refid="cobol_directive_set_1"/>
+            <mffilelist refid="cobol_file_set_1"/>
+        </cobol>
+        
+        <cobollink destdir="${basedir}/New_Configuration.bin" destfile="insertar_venta" desttype="dll/cso" entrypoint="" threadedRts="true" is64bit="false" objectdir="${basedir}/New_Configuration.bin" debug="true" sharedRts="true" objectfile="insertar_venta${objext}"/>
+        <cobollink destdir="${basedir}/New_Configuration.bin" destfile="informe_venta" desttype="dll/cso" entrypoint="" threadedRts="true" is64bit="false" objectdir="${basedir}/New_Configuration.bin" debug="true" sharedRts="true" objectfile="informe_venta${objext}"/>
+        <cobollink destdir="${basedir}/New_Configuration.bin" destfile="Principal" desttype="dll/cso" entrypoint="" threadedRts="true" is64bit="false" objectdir="${basedir}/New_Configuration.bin" debug="true" sharedRts="true" objectfile="Principal${objext}"/>
+        <cobollink destdir="${basedir}/New_Configuration.bin" destfile="consulta_venta" desttype="dll/cso" entrypoint="" threadedRts="true" is64bit="false" objectdir="${basedir}/New_Configuration.bin" debug="true" sharedRts="true" objectfile="consulta_venta${objext}"/>
+        <cobollink destdir="${basedir}/New_Configuration.bin" destfile="eliminar_venta" desttype="dll/cso" entrypoint="" threadedRts="true" is64bit="false" objectdir="${basedir}/New_Configuration.bin" debug="true" sharedRts="true" objectfile="eliminar_venta${objext}"/>
+    </target>
+    
+    <target name="clean.cfg.New_Configuration" depends="init">
+        <cobolclean desttype="dll" destdir="${basedir}/New_Configuration.bin" debug="true">
+            <mffilelist refid="cobol_file_set_1"/>
+            <mfdestfilelist/>
+        </cobolclean>
+        <cobolclean desttype="dll" destdir="${basedir}">
+            <mfdestfilelist/>
+        </cobolclean>
+    </target>
+    
+    <target name="pre.build.cfg.New_Configuration" depends="init"/>
+    
+    <target name="post.build.cfg.New_Configuration" depends="init"/>
+    
+    <!-- ******************* -->
+    <!-- * General targets * -->
+    <!-- ******************* -->
+    
+    <target name="init.New_Configuration" if="isNew_Configuration">
+        <property name="cfgtargetdir" value="New_Configuration.bin"/>
+    </target>
+    
+    <target name="init" depends="os.init,os.init.windows,os.init.unix">
+        <property environment="env"/>
+        <property name="cblproj_path" value="${basedir}"/>
+        <property name="cfg" value="New_Configuration"/>
+        <property name="cfgtarget" value="cfg.${cfg}"/>
+        <property name="forceCompile" value="true"/>
+        
+        <condition property="isNew_Configuration">
+            <equals arg1="${cfg}" arg2="New_Configuration"/>
+        </condition>
+        <property name="pathVar.ECLIPSE_HOME" value="${env.ECLIPSE_HOME}"/>
+        <property name="pathVar.PARENT_LOC" value="${env.PARENT_LOC}"/>
+        <property name="pathVar.WORKSPACE_LOC" value="${env.WORKSPACE_LOC}"/>
+        <property name="pathVar.PROJECT_LOC" value="${env.PROJECT_LOC}"/>
+    </target>
+    
+    <target name="build" depends="init,init.New_Configuration">
+        <antcall target="pre.build.${cfgtarget}" inheritAll="true"/>
+        <antcall target="${cfgtarget}" inheritAll="true"/>
+        <antcall target="post.build.${cfgtarget}" inheritAll="true"/>
+    </target>
+    
+    <target name="clean" depends="init,init.New_Configuration">
+        <antcall target="clean.${cfgtarget}" inheritAll="true"/>
+    </target>
+</project>
